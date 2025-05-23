@@ -20,7 +20,7 @@ The **Critical Path on a Processor (CPOP)** algorithm is a list-based heuristic 
 
 1. **Priority Assignment Phase**: 
    - Calculates upward rank for each task using the formula:
-   $$\text{rank}_u(n_i) = \overline{w_i} + \max_{n_j \in \text{succ}(n_i)} (\overline{c_{i,j}} + \text{rank}_u(n_j))$$
+   rank_u(n_i) = w̄ᵢ + max_{n_j ∈ succ(n_i)} (c̄_{i,j} + rank_u(n_j))
    - Where $\overline{w_i}$ is average computation time and $\overline{c_{i,j}}$ is average communication time
 
 2. **Task Selection and Assignment Phase**:
@@ -67,7 +67,8 @@ The implementation is organized into four main packages:
   - `createEdgeDevices(int numDevices)`: Generates heterogeneous devices with random characteristics
   - `initializeCommunicationMatrix()`: Sets up communication delays between devices
   - `getCommunicationTime(int from, int to, double dataSize)`: Calculates data transfer time:
-    $$\text{commTime} = \text{delay} + \frac{\text{dataSize}}{\min(\text{BW}_{\text{from}}, \text{BW}_{\text{to}})}$$
+    commTime = delay + dataSize / min(BW_from, BW_to)
+
 
 #### 2.1.3 `com.edgescheduling.algorithm` Package
 

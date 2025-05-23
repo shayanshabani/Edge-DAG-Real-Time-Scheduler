@@ -190,3 +190,54 @@ The heterogeneous device utilization shows:
 The implementation successfully demonstrates the CPOP algorithm's effectiveness for task scheduling in edge computing environments. The results show excellent scalability, energy efficiency, and QoS performance across various DAG configurations. The foundation is now ready for Part 2, where PSO-based optimization will be implemented for comparative analysis and potential performance improvements.
 
 The next phase will focus on developing the PSO algorithm to potentially achieve better energy-QoS trade-offs and handling more complex optimization scenarios in edge computing environments.
+
+## 5. Example of Run
+
+=== Edge Computing Task Scheduling Simulation ===
+
+CPOP Algorithm Performance Analysis
+=============================================================
+Edge Environment Configuration:
+Number of devices: 10
+  EdgeDevice[id=0, mips=2455, cores=2] - Power: 10.5-97.1 W, BW: 85.4 MB/s
+  EdgeDevice[id=1, mips=1183, cores=4] - Power: 13.7-63.8 W, BW: 73.2 MB/s
+  EdgeDevice[id=2, mips=2566, cores=4] - Power: 11.5-72.0 W, BW: 96.5 MB/s
+  EdgeDevice[id=3, mips=2597, cores=2] - Power: 15.9-60.5 W, BW: 91.3 MB/s
+  EdgeDevice[id=4, mips=1344, cores=3] - Power: 12.7-82.2 W, BW: 54.0 MB/s
+  EdgeDevice[id=5, mips=1181, cores=4] - Power: 10.3-67.9 W, BW: 90.9 MB/s
+  EdgeDevice[id=6, mips=1835, cores=3] - Power: 10.8-76.7 W, BW: 93.7 MB/s
+  EdgeDevice[id=7, mips=1439, cores=4] - Power: 18.2-81.8 W, BW: 68.5 MB/s
+  EdgeDevice[id=8, mips=1721, cores=3] - Power: 16.5-84.8 W, BW: 97.5 MB/s
+  EdgeDevice[id=9, mips=2098, cores=4] - Power: 11.5-91.7 W, BW: 73.0 MB/s
+
+DAG Configuration: 10 edges
+----------------------------------------------------------------------
+Tasks  | Makespan   | Energy (J)   | QoS (%) 
+----------------------------------------------------------------------
+100    | 4.11       | 658.91       | 99.99   
+200    | 6.08       | 1270.61      | 100.00  
+300    | 9.27       | 1948.91      | 100.00  
+400    | 12.52      | 2639.14      | 100.00  
+500    | 15.30      | 3217.16      | 100.00  
+
+DAG Configuration: 20 edges
+----------------------------------------------------------------------
+Tasks  | Makespan   | Energy (J)   | QoS (%) 
+----------------------------------------------------------------------
+100    | 5.92       | 638.49       | 98.53   
+200    | 6.08       | 1269.67      | 100.00  
+300    | 9.31       | 1947.35      | 99.99   
+400    | 12.52      | 2640.53      | 100.00  
+500    | 15.32      | 3216.24      | 100.00  
+
+DAG Configuration: 30 edges
+----------------------------------------------------------------------
+Tasks  | Makespan   | Energy (J)   | QoS (%) 
+----------------------------------------------------------------------
+100    | 9.23       | 657.47       | 97.88   
+200    | 6.37       | 1230.14      | 98.77   
+300    | 9.47       | 1949.65      | 99.88   
+400    | 12.52      | 2640.38      | 100.00  
+500    | 15.30      | 3213.68      | 100.00  
+
+=== Basic Modeling and Implementation Complete ===

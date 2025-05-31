@@ -16,26 +16,39 @@
     </properties>
 
     <dependencies>
-        <!-- For graph operations -->
+        <!-- CloudSimPlus - Latest stable version -->
+        <dependency>
+            <groupId>org.cloudsimplus</groupId>
+            <artifactId>cloudsim-plus</artifactId>
+            <version>8.0.0</version>
+        </dependency>
+
+        <!-- JGraphT for DAG operations -->
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
             <version>1.5.1</version>
         </dependency>
 
-        <!-- For testing -->
+        <!-- SLF4J API -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
-            <scope>test</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
         </dependency>
 
-        <!-- For charts (optional) -->
+        <!-- Logback Core -->
         <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.5.3</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+
+        <!-- Logback Classic (includes SLF4J binding) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.12</version>
         </dependency>
     </dependencies>
 
@@ -48,6 +61,16 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Exec Plugin for easy running -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>com.edgescheduling.EdgeSchedulingSimulation</mainClass>
                 </configuration>
             </plugin>
         </plugins>

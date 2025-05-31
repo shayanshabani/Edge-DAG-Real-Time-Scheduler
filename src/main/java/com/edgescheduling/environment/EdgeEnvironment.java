@@ -1,69 +1,135 @@
 package com.edgescheduling.environment;
 
-import com.edgescheduling.model.EdgeDevice;
+import org.cloudsimplus.brokers.DatacenterBroker;
+import org.cloudsimplus.brokers.DatacenterBrokerSimple;
+import org.cloudsimplus.cloudlets.Cloudlet;
+import org.cloudsimplus.core.CloudSimPlus;
+import org.cloudsimplus.datacenters.Datacenter;
+import org.cloudsimplus.datacenters.DatacenterSimple;
+import org.cloudsimplus.hosts.Host;
+import org.cloudsimplus.hosts.HostSimple;
+import org.cloudsimplus.resources.Pe;
+import org.cloudsimplus.resources.PeSimple;
+import org.cloudsimplus.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudsimplus.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudsimplus.utilizationmodels.UtilizationModelDynamic;
+import org.cloudsimplus.vms.Vm;
+import org.cloudsimplus.vms.VmSimple;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+/**
+ * Models the edge computing environment using CloudSimPlus
+ */
 public class EdgeEnvironment {
-    private final List<EdgeDevice> devices;
-    private final double[][] communicationMatrix; // Communication delays between devices
-    private final Random random;
+    private final CloudSimPlus simulation;
+    private final List<Datacenter> edgeDatacenters;
+    private final List<Vm> edgeVMs;
+    private final DatacenterBroker broker;
 
-    public EdgeEnvironment(int numDevices, long seed) {
-        this.devices = new ArrayList<>();
-        this.communicationMatrix = new double[numDevices][numDevices];
-        this.random = new Random(seed);
-        createEdgeDevices(numDevices);
-        initializeCommunicationMatrix();
+    public EdgeEnvironment() {
+        this.simulation = new CloudSimPlus();
+        this.edgeDatacenters = new ArrayList<>();
+        this.edgeVMs = new ArrayList<>();
+        this.broker = new DatacenterBrokerSimple(simulation);
+
+        createEdgeInfrastructure();
     }
 
-    private void createEdgeDevices(int numDevices) {
-        for (int i = 0; i < numDevices; i++) {
-            // Create heterogeneous edge devices
-            double mips = 1000 + random.nextDouble() * 2000; // 1000-3000 MIPS
-            int cores = 2 + random.nextInt(3); // 2-4 cores
-            double powerIdle = 10 + random.nextDouble() * 10; // 10-20 Watts idle
-            double powerMax = 50 + random.nextDouble() * 50; // 50-100 Watts max
-            double bandwidth = 50 + random.nextDouble() * 50; // 50-100 MB/s
-
-            devices.add(new EdgeDevice(i, mips, cores, powerIdle, powerMax, bandwidth));
+    /**
+     * Creates edge computing infrastructure with multiple edge nodes
+     */
+    private void createEdgeInfrastructure() {
+        // Create 5 edge datacenters with different capabilities
+        for (int i = 0; i < 5; i++) {
+            Datacenter datacenter = createEdgeDatacenter(i);
+            edgeDatacenters.add(datacenter);
         }
+
+        // Create VMs for each datacenter
+        createEdgeVMs();
     }
 
-    private void initializeCommunicationMatrix() {
-        int n = devices.size();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i == j) {
-                    communicationMatrix[i][j] = 0.0; // No communication delay within same device
-                } else {
-                    // Random communication delay between devices (1-10 ms base + distance factor)
-                    communicationMatrix[i][j] = 1.0 + random.nextDouble() * 9.0;
+    /**
+     * Creates an edge datacenter with specified characteristics
+     */
+    private Datacenter createEdgeDatacenter(int id) {
+        List<Host> hostList = new ArrayList<>();
+
+        // Create 2-4 hosts per datacenter
+        int numHosts = 2 + (id % 3);
+        for (int i = 0; i < numHosts; i++) {
+            Host host = createEdgeHost(id * 10 + i);
+            hostList.add(host);
+        }
+
+        return new DatacenterSimple(simulation, hostList);
+    }
+
+    /**
+     * Creates an edge host with limited resources
+     */
+    private Host createEdgeHost(int id) {
+        List<Pe> peList = new ArrayList<>();
+
+        // Edge devices have 2-8 cores with varying MIPS
+        int numPes = 2 + (id % 7);
+        long mips = 1000 + (id % 4) * 500; // 1000-2500 MIPS
+
+        for (int i = 0; i < numPes; i++) {
+            peList.add(new PeSimple(mips));
+        }
+
+        long ram = 2048 + (id % 4) * 1024; // 2-5 GB RAM
+        long storage = 10000 + (id % 5) * 5000; // 10-35 GB storage
+        long bw = 100 + (id % 10) * 50; // 100-550 Mbps
+
+        return new HostSimple(ram, bw, storage, peList)
+                .setVmScheduler(new VmSchedulerTimeShared());
+    }
+
+    /**
+     * Creates VMs for edge computing
+     */
+    private void createEdgeVMs() {
+        int vmId = 0;
+
+        for (Datacenter datacenter : edgeDatacenters) {
+            for (Host host : datacenter.getHostList()) {
+                // Create 1-2 VMs per host
+                int numVMs = 1 + (vmId % 2);
+
+                for (int i = 0; i < numVMs; i++) {
+                    Vm vm = createEdgeVM(vmId++, host);
+                    edgeVMs.add(vm);
                 }
             }
         }
+
+        broker.submitVmList(edgeVMs);
     }
 
-    public double getCommunicationTime(int fromDevice, int toDevice, double dataSize) {
-        if (fromDevice == toDevice) return 0.0;
+    /**
+     * Creates a VM with edge-appropriate specifications
+     */
+    private Vm createEdgeVM(int id, Host host) {
+        double mips = host.getTotalMipsCapacity() / 2; // Use half of host capacity
+        int pesNumber = Math.max(1, host.getPeList().size() / 2);
+        long ram = host.getRam().getCapacity() / 2;
+        long bw = host.getBw().getCapacity() / 2;
+        long storage = host.getStorage().getCapacity() / 2;
 
-        double delay = communicationMatrix[fromDevice][toDevice];
-        double bandwidth = Math.min(devices.get(fromDevice).getBandwidth(),
-                devices.get(toDevice).getBandwidth());
-        return delay + (dataSize / bandwidth);
+        return new VmSimple(id, mips, pesNumber)
+                .setRam(ram)
+                .setBw(bw)
+                .setSize(storage)
+                .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 
-    public List<EdgeDevice> getDevices() { return devices; }
-    public EdgeDevice getDevice(int id) { return devices.get(id); }
-    public int getNumDevices() { return devices.size(); }
-
-    public void printEnvironmentInfo() {
-        System.out.println("Edge Environment Configuration:");
-        System.out.println("Number of devices: " + devices.size());
-        for (EdgeDevice device : devices) {
-            System.out.printf("  %s - Power: %.1f-%.1f W, BW: %.1f MB/s\n",
-                    device, device.getPowerIdle(), device.getPowerMax(), device.getBandwidth());
-        }
-    }
+    // Getters
+    public CloudSimPlus getSimulation() { return simulation; }
+    public List<Datacenter> getEdgeDatacenters() { return edgeDatacenters; }
+    public List<Vm> getEdgeVMs() { return edgeVMs; }
+    public DatacenterBroker getBroker() { return broker; }
 }

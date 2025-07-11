@@ -1,5 +1,0 @@
-com\edgescheduling\environment\EdgeEnvironment.class
-com\edgescheduling\model\Task.class
-com\edgescheduling\EdgeSchedulingSimulation.class
-com\edgescheduling\model\DAGGenerator.class
-com\edgescheduling\algorithms\CPOPScheduler.class

@@ -8,14 +8,11 @@ import org.cloudsimplus.cloudlets.CloudletSimple;
 
 import java.util.*;
 
-/**
- * Represents a task in the DAG with dependencies
- */
 public class Task {
     private final int id;
     private final long length; // in MI (Million Instructions)
-    private final long fileSize; // in bytes
-    private final long outputSize; // in bytes
+    private final long fileSize;
+    private final long outputSize;
     private final int priority;
     private Cloudlet cloudlet;
     private double computationCost;
@@ -31,7 +28,6 @@ public class Task {
         this.communicationCost = 0.0;
     }
 
-    // Getters and setters
     public int getId() { return id; }
     public long getLength() { return length; }
     public long getFileSize() { return fileSize; }

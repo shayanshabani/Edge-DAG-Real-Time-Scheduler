@@ -19,9 +19,6 @@ import org.cloudsimplus.vms.VmSimple;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Models the edge computing environment using CloudSimPlus
- */
 public class EdgeEnvironment {
     private final CloudSimPlus simulation;
     private final List<Datacenter> edgeDatacenters;
@@ -33,31 +30,21 @@ public class EdgeEnvironment {
         this.edgeDatacenters = new ArrayList<>();
         this.edgeVMs = new ArrayList<>();
         this.broker = new DatacenterBrokerSimple(simulation);
-
         createEdgeInfrastructure();
     }
 
-    /**
-     * Creates edge computing infrastructure with multiple edge nodes
-     */
     private void createEdgeInfrastructure() {
-        // Create 5 edge datacenters with different capabilities
         for (int i = 0; i < 5; i++) {
             Datacenter datacenter = createEdgeDatacenter(i);
             edgeDatacenters.add(datacenter);
         }
 
-        // Create VMs for each datacenter
         createEdgeVMs();
     }
 
-    /**
-     * Creates an edge datacenter with specified characteristics
-     */
     private Datacenter createEdgeDatacenter(int id) {
         List<Host> hostList = new ArrayList<>();
 
-        // Create 2-4 hosts per datacenter
         int numHosts = 2 + (id % 3);
         for (int i = 0; i < numHosts; i++) {
             Host host = createEdgeHost(id * 10 + i);
@@ -67,13 +54,9 @@ public class EdgeEnvironment {
         return new DatacenterSimple(simulation, hostList);
     }
 
-    /**
-     * Creates an edge host with limited resources
-     */
     private Host createEdgeHost(int id) {
         List<Pe> peList = new ArrayList<>();
 
-        // Edge devices have 2-8 cores with varying MIPS
         int numPes = 2 + (id % 7);
         long mips = 1000 + (id % 4) * 500; // 1000-2500 MIPS
 
@@ -89,9 +72,6 @@ public class EdgeEnvironment {
                 .setVmScheduler(new VmSchedulerTimeShared());
     }
 
-    /**
-     * Creates VMs for edge computing
-     */
     private void createEdgeVMs() {
         int vmId = 0;
 
@@ -110,11 +90,8 @@ public class EdgeEnvironment {
         broker.submitVmList(edgeVMs);
     }
 
-    /**
-     * Creates a VM with edge-appropriate specifications
-     */
     private Vm createEdgeVM(int id, Host host) {
-        double mips = host.getTotalMipsCapacity() / 2; // Use half of host capacity
+        double mips = host.getTotalMipsCapacity() / 2;
         int pesNumber = Math.max(1, host.getPeList().size() / 2);
         long ram = host.getRam().getCapacity() / 2;
         long bw = host.getBw().getCapacity() / 2;
@@ -127,7 +104,6 @@ public class EdgeEnvironment {
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 
-    // Getters
     public CloudSimPlus getSimulation() { return simulation; }
     public List<Datacenter> getEdgeDatacenters() { return edgeDatacenters; }
     public List<Vm> getEdgeVMs() { return edgeVMs; }

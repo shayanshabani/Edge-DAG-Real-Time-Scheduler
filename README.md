@@ -30,16 +30,21 @@ This project provides a robust, simulation-based framework to tackle this proble
 Our findings reveal a crucial trade-off: the "best" algorithm is entirely dependent on the specific performance goals of the edge application.
 
 ---
+Of course. Here is the complete, updated code block for the "Key Findings at a Glance" section, reflecting that PSO is the winner for energy consumption and providing the detailed rationale.
+
+You can copy and paste this entire block to replace the old one in your `README.md`.
+
+---
 
 ## 📊 Key Findings at a Glance
 
-Our experiments, conducted using the **CloudSimPlus** framework, yielded a nuanced and insightful comparison.
+Our experiments, conducted using the **CloudSimPlus** framework, yielded a nuanced and insightful comparison. The choice of the "best" algorithm is not straightforward and depends entirely on the optimization goal.
 
 | Metric | CPOP (Heuristic) | PSO (Metaheuristic) | Insight |
 | :--- | :---: | :---: | :--- |
-| **Makespan** (Speed) | 🏆 **Winner** | Slower | CPOP's focused strategy is superior for raw completion time. |
-| **Energy Consumption** | 🏆 **Winner** | Higher | Directly correlated with makespan; faster completion means less energy used. |
-| **Quality of Service (QoS)** | Lower | 🏆 **Winner** | PSO excels at finding balanced solutions (e.g., better load distribution), which boosts our composite QoS score. |
+| **Makespan** (Speed) | 🏆 **Winner** | Slower | CPOP's rigid, speed-focused strategy is superior for raw completion time. |
+| **Energy Consumption** | Higher | 🏆 **Winner** | PSO intelligently assigns tasks to power-efficient VMs, even if they are slower. |
+| **Quality of Service (QoS)** | Lower | 🏆 **Winner** | PSO excels at finding balanced solutions that improve load distribution and stability. |
 | **Scheduling Overhead** | ⚡ **Negligible** | High | CPOP is near-instantaneous, while PSO's iterative search is computationally expensive. |
 
 <br>
@@ -49,19 +54,15 @@ Our experiments, conducted using the **CloudSimPlus** framework, yielded a nuanc
 
 | Makespan Comparison (Lower is Better) | Energy Comparison (Lower is Better) |
 | :---: | :---: |
-| <img src="https://i.imgur.com/wVf5M4i.png" alt="Makespan Comparison Chart"> | <img src="https://i.imgur.com/GzG9R3v.png" alt="Energy Comparison Chart"> |
+| <img src="/results/charts/makespan_comparison_ieee.png" alt="Makespan Comparison Chart"> | <img src="/results/charts/energy_comparison_ieee.png" alt="Energy Comparison Chart"> |
 
 | QoS Comparison (Higher is Better) | Scalability (Lower is Better) |
 | :---: | :---: |
-| <img src="https://i.imgur.com/2nKkG1m.png" alt="QoS Comparison Chart"> | <img src="https://i.imgur.com/wQ7bX2D.png" alt="Scalability Chart"> |
+| <img src="/results/charts/qos_comparison_ieee.png" alt="QoS Comparison Chart"> | <img src="/results/charts/scalability_analysis_ieee.png" alt="Scalability Chart"> |
 
 </details>
 
 <br>
-
-**Conclusion:**
-*   Choose **CPOP** for time-critical or energy-sensitive applications where speed is the top priority.
-*   Choose **PSO** for systems where overall health, stability, and load balance (captured by QoS) are more important than sheer speed.
 
 ---
 

@@ -1,131 +1,143 @@
-# 🚦 Edge Computing DAG Scheduling with CPOP
+# 🚦 Comparative Analysis of CPOP and PSO for DAG Task Scheduling in Edge Computing
 
 <div align="center">
 
-<img src="https://img.shields.io/badge/CloudSimPlus-8.0.0-blue?logo=java&logoColor=white" alt="CloudSimPlus">
-<img src="https://img.shields.io/badge/JGraphT-1.5.1-brightgreen?logo=java&logoColor=white">
-<img src="https://img.shields.io/badge/Status-Course%20Project-yellow">
-<img src="https://img.shields.io/badge/License-MIT-blue.svg">
 
+
+### A comprehensive simulation toolkit for scheduling dependent workflows on heterogeneous edge infrastructure. This project implements and contrasts a classic heuristic (CPOP) with a metaheuristic (PSO) to explore the trade-offs between makespan, energy, and Quality of Service.
+
+<br>
+
+<p>
+  <img src="https://img.shields.io/badge/Language-Java_11+-F89820?style=for-the-badge&logo=java&logoColor=white" alt="Language: Java">
+  <img src="https://img.shields.io/badge/Simulation-CloudSimPlus-1E90FF?style=for-the-badge" alt="CloudSimPlus">
+  <img src="https://img.shields.io/badge/Status-Complete-28A745?style=for-the-badge" alt="Status: Complete">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT">
+</p>
 </div>
 
 ---
 
-**A scalable edge computing simulation toolkit for static DAG workflow scheduling — featuring a clean, reproducible Java implementation of the classic [CPOP](https://doi.org/10.1109/71.877944) (Critical Path On a Processor) heuristic, with focus on load balancing, makespan minimization, and extensibility for future QoS/energy-aware research.**
+## 🌟 Project Overview
+
+In edge computing, efficiently scheduling complex workflows—represented as **Directed Acyclic Graphs (DAGs)**—is a critical challenge. The goal is to assign computational tasks to a diverse set of edge devices (VMs) to optimize for multiple, often conflicting, objectives.
+
+This project provides a robust, simulation-based framework to tackle this problem by implementing and evaluating two distinct scheduling philosophies:
+
+1.  **CPOP (Critical-Path On a Processor):** A fast, deterministic heuristic that prioritizes minimizing the longest execution path in the workflow.
+2.  **PSO (Particle Swarm Optimization):** A powerful metaheuristic that explores a vast solution space to co-optimize for a blend of objectives, including **makespan**, **energy consumption**, and **Quality of Service (QoS)**.
+
+Our findings reveal a crucial trade-off: the "best" algorithm is entirely dependent on the specific performance goals of the edge application.
 
 ---
 
-## ✨ Project Highlights
+## 📊 Key Findings at a Glance
 
-- 📉 **Static scheduling of dependent tasks (DAGs) across heterogeneous edge devices**
-- 🕸️ **CPOP scheduling heuristic**: upward/downward rank calculation, critical path binding, and load-aware non-critical task allocation
-- ⚡ **CloudSimPlus** and **JGraphT** for realistic simulation and reproducibility
-- 📊 Modular, research-friendly code; easy to extend for metaheuristics (e.g., PSO), heterogeneous links, or energy/QoS models
+Our experiments, conducted using the **CloudSimPlus** framework, yielded a nuanced and insightful comparison.
 
----
+| Metric | CPOP (Heuristic) | PSO (Metaheuristic) | Insight |
+| :--- | :---: | :---: | :--- |
+| **Makespan** (Speed) | 🏆 **Winner** | Slower | CPOP's focused strategy is superior for raw completion time. |
+| **Energy Consumption** | 🏆 **Winner** | Higher | Directly correlated with makespan; faster completion means less energy used. |
+| **Quality of Service (QoS)** | Lower | 🏆 **Winner** | PSO excels at finding balanced solutions (e.g., better load distribution), which boosts our composite QoS score. |
+| **Scheduling Overhead** | ⚡ **Negligible** | High | CPOP is near-instantaneous, while PSO's iterative search is computationally expensive. |
 
-## 🧩 Problem Statement
+<br>
 
-Given a DAG of dependent tasks and a pool of edge VMs with diverse performance:
+<details>
+<summary><strong>Click to view the comparative performance charts</strong></summary>
 
-- ⏱️ Assign tasks to VMs to **minimize the total makespan**
-- 🔗 **Respect precedence and data-dependency constraints**
-- 🎯 Seek good **load balancing**; minimize bottlenecks
-- 🚀 Lay groundwork for **energy-/QoS-aware scheduling** research
+| Makespan Comparison (Lower is Better) | Energy Comparison (Lower is Better) |
+| :---: | :---: |
+| <img src="https://i.imgur.com/wVf5M4i.png" alt="Makespan Comparison Chart"> | <img src="https://i.imgur.com/GzG9R3v.png" alt="Energy Comparison Chart"> |
 
----
+| QoS Comparison (Higher is Better) | Scalability (Lower is Better) |
+| :---: | :---: |
+| <img src="https://i.imgur.com/2nKkG1m.png" alt="QoS Comparison Chart"> | <img src="https://i.imgur.com/wQ7bX2D.png" alt="Scalability Chart"> |
 
-## 🚦 Why CPOP?
+</details>
 
-CPOP is a well-known baseline for DAG scheduling on heterogeneous resources. Its main features:
+<br>
 
-- **Ranks tasks** by their criticality using upward / downward propagation
-- **Binds critical-path tasks** to the fastest VM, minimizing the chain latency
-- **Allocates remaining tasks** by intelligent priority and earliest finish time
-- **Static, light-weight, and produces high parallelism when VMs are abundant**
-
----
-
-## 🏗️ Simulation Modules
-
-- **Task.java**\  
-  ☑️ Represents a DAG node with unique ID, computational workload, and references to predecessors/successors
-
-- **DAGGenerator.java**\  
-  ⚙️ Procedurally generates random acyclic graphs (with user-defined size/density) for rigorous testing
-
-- **EdgeEnvironment.java**\  
-  💻 Initializes CloudSimPlus hosts, brokers, and a heterogenous pool of edge VMs
-
-- **CPOPScheduler.java**\  
-  🧠 Core scheduling implementation — computes ranks, extracts critical path, assigns tasks, computes mapping/timing
-
-- **EdgeSchedulingSimulation.java**\  
-  🚀 Main loop to generate DAGs, run CPOP scheduling, launch CloudSimPlus, and record/print results
+**Conclusion:**
+*   Choose **CPOP** for time-critical or energy-sensitive applications where speed is the top priority.
+*   Choose **PSO** for systems where overall health, stability, and load balance (captured by QoS) are more important than sheer speed.
 
 ---
 
-## 📈 Example Results (CPOP Baseline)
+## 🏗️ Architectural Design
 
-- **Scheduling Overhead:**  
-  Under 12ms for up to 300 tasks (on 27 VMs)
-- **Makespan:**  
-  Grows linearly with task count  
-  *E.g.,* 100 tasks ≈ 0.59s, 300 tasks ≈ 1.73s
-- **Load Balance:**  
-  Tasks largely balanced; critical-path VM (~20 tasks), others 10–12
-- **DAG Density:**  
-  Deeper DAGs (less dense) produce longer critical paths and marginally increased scheduling time. Communication delay negligible in current model.
+The project is built with a modular and extensible architecture, making it ideal for future research and experimentation.
 
-![CPOP scheduling concept diagram](https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Dag-cpop-criticalpath.png/350px-Dag-cpop-criticalpath.png)
+-   **`Core Models`**: `Task.java` and `DAGGenerator.java` define the fundamental workflow structures and procedurally generate random DAGs for testing.
+-   **`EdgeEnvironment.java`**: Configures the CloudSimPlus simulation, creating hosts and a heterogeneous pool of VMs to model the edge infrastructure.
+-   **`Scheduler Implementations`**: The heart of the project.
+    -   `CPOPScheduler.java`: Implements the rank calculation, critical path identification, and task-to-VM mapping logic for the CPOP heuristic.
+    -   `PSOScheduler.java`: Implements the swarm initialization, iterative fitness evaluation, and particle update loop for the PSO metaheuristic.
+-   **`EdgeSchedulingSimulation.java`**: The main driver that orchestrates the experiments—running both schedulers on a common DAG, launching the simulations, and aggregating the results for comparison.
 
 ---
 
-## ⚗️ Extending This Project
+## 🚀 Getting Started
 
-> This codebase is meant to be hacked, extended, and benchmarked!
+### Prerequisites
+*   Java Development Kit (JDK) 11 or higher
+*   Apache Maven
 
-Want to prototype metaheuristics (e.g. PSO, ACO), introduce realistic network topologies, or test SLA/Energy-QoS objectives?  
-Just fork and start building!
+### Installation & Execution
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/edge-dag-scheduling.git
+    cd edge-dag-scheduling
+    ```
+
+2.  **Build the project using Maven:**
+    This command will download all dependencies (like CloudSimPlus) and compile the source code.
+    ```bash
+    mvn clean package
+    ```
+
+3.  **Run the simulation:**
+    Execute the packaged JAR file to run the full comparative simulation.
+    ```bash
+    java -jar target/EdgeScheduling-1.0-SNAPSHOT-jar-with-dependencies.jar
+    ```
+    The console will output the progress and final results of the comparison.
 
 ---
 
-## 🚀 Quick Start
+## 🧪 Extending This Project
 
-1. **Clone and build:**
-   ```bash
-   git clone https://github.com/your-username/edge-dag-cpop
-   cd edge-dag-cpop
-   mvn clean package
-   ```
+This codebase is designed to be a foundation for further research. Here are some ideas:
 
-2. **Run sample simulation:**
-   ```bash
-   java -jar target/edge-dag-cpop-1.0-SNAPSHOT.jar
-   ```
-   *(Requires JDK 11+ and Maven; dependencies auto-resolved)*
-
----
-
-## 📎 Related Papers
-
-- Topcuoglu, H., Hariri, S., & Wu, M.-Y. (2002). [Performance-Effective and Low-Complexity Task Scheduling for Heterogeneous Computing](https://doi.org/10.1109/71.877944). *IEEE Transactions on Parallel and Distributed Systems*, 13(3), 260-274.
+-   **Tune PSO Parameters:** Conduct a sensitivity analysis on PSO's population size, inertia weight, and fitness function weights to see if its makespan performance can be improved.
+-   **Develop a Hybrid Algorithm:** Create a new scheduler that uses CPOP to generate a high-quality initial solution for the PSO swarm. This could offer the best of both worlds!
+-   **Implement Other Algorithms:** Add other classic heuristics (e.g., HEFT) or metaheuristics (e.g., Genetic Algorithm, Ant Colony Optimization) for a broader comparison.
+-   **Introduce Realistic Network Models:** Enhance `EdgeEnvironment.java` to simulate network latency and bandwidth constraints between different edge locations.
 
 ---
 
 ## 🤝 Contributing
 
-Pull requests are welcome — please open an issue first to discuss any major design changes or research ideas.  
-If you use/adapt this project for your research, please cite or acknowledge appropriately!
+Pull requests are warmly welcome! For major changes or new features, please open an issue first to discuss what you would like to change. If you use or adapt this project for your research, a citation or acknowledgment would be greatly appreciated.
 
 ---
 
 ## 👤 Maintainers
-| [Dorsa Ghobadi](https://github.com/dorsaaaa) |  
-|:--:|  
-| Undergraduate Computer Engineering Students |
-| [Mohammadshayan Shabani](https://github.com/shayanshabani) |  
-| Undergraduate Computer Engineering Students |  
+
+| [<img src="https://avatars.githubusercontent.com/u/81723821?v=4" width="100px;"/><br /><sub>Dorsa Ghobadi</sub>](https://github.com/dorsaaaa) | [<img src="https://avatars.githubusercontent.com/u/61823522?v=4" width="100px;"/><br /><sub>Mohammadshayan Shabani</sub>](https://github.com/shayanshabani) |
+| :---: | :---: |
+| *Computer Engineering Student* | *Computer Engineering Student* |
+
 ---
 
-*Happy Scheduling! 🚦✨*
+## 📚 References
+
+-   Topcuoglu, H., Hariri, S., & Wu, M.-Y. (2002). [Performance-Effective and Low-Complexity Task Scheduling for Heterogeneous Computing](https://doi.org/10.1109/71.877944). *IEEE Transactions on Parallel and Distributed Systems*, 13(3), 260-274.
+
+---
+
+<div align="center">
+  <em>Happy Scheduling! ⚡</em>
+</div>

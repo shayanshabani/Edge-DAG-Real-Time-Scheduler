@@ -30,11 +30,6 @@ This project provides a robust, simulation-based framework to tackle this proble
 Our findings reveal a crucial trade-off: the "best" algorithm is entirely dependent on the specific performance goals of the edge application.
 
 ---
-Of course. Here is the complete, updated code block for the "Key Findings at a Glance" section, reflecting that PSO is the winner for energy consumption and providing the detailed rationale.
-
-You can copy and paste this entire block to replace the old one in your `README.md`.
-
----
 
 ## 📊 Key Findings at a Glance
 
